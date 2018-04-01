@@ -45,20 +45,17 @@ scale_colour_brewer(palette = "Dark2") +
 theme_remark()
 
 ## ---- ped-data
-ped_run <- rwalkr::run_melb(year = 2017)
+ped_run <- rwalkr::run_melb(year = 2017, na.rm = TRUE)
 pedestrian <- ped_run %>% 
   mutate(
-    Sensor = if_else(Sensor == "QV Market-Peel St", "Victoria Market", Sensor),
-    Holiday = if_else(Date %in% c(au_holiday(2017)$date, as_date("2017-09-29")), 
-    TRUE, FALSE)
+    Sensor = if_else(Sensor == "QV Market-Peel St", "Victoria Market", Sensor)
   )
 
 ## ---- ped-sub
 subdat <- pedestrian %>% 
-  filter(Sensor %in% sensors) %>% 
-  mutate(Day = wday(Date, label = TRUE, week_start = 1))
+  filter(Sensor %in% sensors)
 
-## ---- ts-plot
+## ---- ts-plot-na
 # conventional time series plot
 subdat %>% 
   ggplot(aes(x = Date_Time, y = Count, colour = Sensor)) +
@@ -76,9 +73,76 @@ subdat %>%
   xlab("Date Time") +
   ylab("Hourly Counts")
 
+## ---- tsibble
+subdat_tsbl <- subdat %>% 
+  as_tsibble(key = id(Sensor), index = Date_Time)
+subdat_tsbl
+
+## ---- fill-na
+subdat_full <- subdat_tsbl %>% 
+  fill_na(
+    Date = as_date(Date_Time),
+    Time = hour(Date_Time)
+  )
+subdat_full
+
+## ---- ts-plot
+subdat_full %>% 
+  ggplot(aes(x = Date_Time, y = Count, colour = Sensor)) +
+  geom_line(size = 0.5) +
+  facet_grid(
+    Sensor ~ ., 
+    labeller = labeller(Sensor = label_wrap_gen(20)),
+    scales = "free_y"
+  ) +
+  scale_colour_brewer(
+    palette = "Dark2", 
+    guide = guide_legend(title = "Sensor")
+  ) +
+  theme_remark() +
+  xlab("Date Time") +
+  ylab("Hourly Counts")
+
+## ---- tsummarise
+subdat_daily <- subdat_full %>% 
+  group_by(Sensor) %>% 
+  tsummarise(
+    Date = as_date(Date_Time),
+    DailyCount = sum(Count, na.rm = TRUE)
+  )
+subdat_daily
+
+## ---- daily-sensor
+subdat_daily %>% 
+  ggplot(aes(x = Date, y = DailyCount, colour = Sensor)) +
+  geom_line() +
+  geom_point() +
+  facet_grid(
+    Sensor ~ ., 
+    labeller = labeller(Sensor = label_wrap_gen(20)),
+    scales = "free_y"
+  ) +
+  scale_colour_brewer(
+    palette = "Dark2", 
+    guide = guide_legend(title = "Sensor")
+  ) +
+  theme_remark() +
+  xlab("Date") +
+  ylab("Daily Counts")
+
+## ---- mutate
+subdat_full <- subdat_full %>% 
+  mutate(
+    Holiday = if_else(
+      Date %in% c(au_holiday(2017)$date, as_date("2017-09-29")), 
+      TRUE, FALSE),
+    Day = wday(Date_Time, label = TRUE, week_start = 1)
+  )
+subdat_full
+
 ## ---- facet-time
 # time series plot faceted by sensors and day of week
-subdat %>% 
+subdat_full %>% 
   ggplot(aes(x = Time, y = Count, group = Date, 
     colour = Sensor)) +
   geom_line(size = 0.5) +
@@ -104,7 +168,8 @@ sx_cal %>%
   select(Time, Count, Date, .Time, .Count)
 
 ## ---- sx-plot
-p_sx <- ggplot(sx_cal, aes(x = .Time, y = .Count, group = Date)) +
+p_sx <- sx_cal %>% 
+  ggplot(aes(.Time, .Count, group = Date, colour = Holiday)) +
   geom_line() +
   theme_remark()
 p_sx
@@ -112,15 +177,8 @@ p_sx
 ## ---- sx-prettify
 prettify(p_sx)
 
-## ---- sx-hol
-p2_sx <- sx_cal %>% 
-  ggplot(aes(.Time, .Count, group = Date, colour = Holiday)) +
-  geom_line() +
-  theme_remark()
-prettify(p2_sx)
-
 ## ---- sx-march
-p3_sx <- pedestrian %>% 
+p3_sx <- subdat_full %>% 
   filter(
     Sensor == "Southern Cross Station",
     Date >= as_date("2017-03-01"), Date <= as_date("2017-03-31")
@@ -135,7 +193,7 @@ p3_sx <- pedestrian %>%
 prettify(p3_sx, label = c("label", "text", "text2"), size = 5)
 
 ## ---- dec
-dec <- pedestrian %>% 
+dec <- subdat_full %>% 
   filter(
     Sensor == "Flinders St-Elizabeth St (East)",
     Date >= as_date("2017-12-01"), Date <= as_date("2017-12-31")
@@ -147,24 +205,3 @@ dec <- pedestrian %>%
   theme_remark()
 prettify(dec, label = c("label", "text", "text2"), size = 5)
 
-## ---- facet
-# calendar plots faceted by the sensors
-facet_cal <- subdat %>% 
-  group_by(Sensor) %>% 
-  frame_calendar(
-    x = Time, y = Count, date = Date, nrow = 2
-  )
-
-p_facet <- facet_cal %>% 
-  ggplot(aes(x = .Time, y = .Count, group = Date)) +
-  geom_line(aes(colour = Sensor)) +
-  facet_grid(
-    Sensor ~ ., 
-    labeller = labeller(Sensor = label_wrap_gen(20))
-  ) +
-  scale_colour_brewer(
-    palette = "Dark2", 
-    guide = guide_legend(title = "Sensor")
-  ) +
-  theme_remark()
-prettify(p_facet, label = NULL)

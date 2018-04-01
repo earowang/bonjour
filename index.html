@@ -27,9 +27,12 @@ class: center, middle, inverse, title-slide
 
 ---
 
-background-image: url(img/sensor.png)
-background-size: 55%
+class: bottom center
 
+background-image: url(img/actual.jpg)
+background-size: 100%
+
+&lt;img src="img/sensor.png" height=200px&gt;
 # .blue[Melbourne pedestrian activity]
 
 ---
@@ -94,8 +97,33 @@ background-size: 55%
 ### - time series plot
 ]
 .right-column[
-&lt;img src="figure/ts-plot-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="figure/ts-plot-na-1.svg" style="display: block; margin: auto;" /&gt;
 ]
+
+---
+
+
+
+---
+
+
+```
+#&gt; # A tsibble: 26,280 x 5 [1HOUR]
+#&gt; # Keys:      Sensor [3]
+#&gt;   Sensor         Date_Time           Date        Time Count
+#&gt;   &lt;chr&gt;          &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt; 1 Flinders St-E… 2017-01-01 00:00:00 2017-01-01     0    NA
+#&gt; 2 Flinders St-E… 2017-01-01 01:00:00 2017-01-01     1    NA
+#&gt; 3 Flinders St-E… 2017-01-01 02:00:00 2017-01-01     2    NA
+#&gt; 4 Flinders St-E… 2017-01-01 03:00:00 2017-01-01     3    NA
+#&gt; 5 Flinders St-E… 2017-01-01 04:00:00 2017-01-01     4    NA
+#&gt; 6 Flinders St-E… 2017-01-01 05:00:00 2017-01-01     5    NA
+#&gt; # ... with 2.627e+04 more rows
+```
+
+---
+
+
 
 ---
 
