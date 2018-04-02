@@ -25,14 +25,27 @@ class: center, middle, inverse, title-slide
 
 
 
+class: middle
+
+## What is temporal-context data?
+
+Data measured or collected at different time points
+
+--
+
+## What to do with it?
+
+* trend, seasonal variations, or outliers
+* time dependencies within or cross series
+* modeling and forecasting
+
 ---
 
 class: bottom center
 
-background-image: url(img/actual.jpg)
-background-size: 100%
+background-image: url(img/sensor.png)
+background-size: 50%
 
-&lt;img src="img/sensor.png" height=200px&gt;
 # .blue[Melbourne pedestrian activity]
 
 ---
@@ -42,8 +55,6 @@ background-size: 100%
 ### - sensors
 ]
 .right-column[
-## The city of Melbourne
-
 &lt;img src="figure/map-1.svg" style="display: block; margin: auto;" /&gt;
 
 ]
@@ -56,30 +67,33 @@ background-size: 100%
 ### - the data
 ]
 .right-column[
-* Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.gov.au)
-* Access the pedestrian data through the [rwalkr](http://pkg.earo.me/rwalkr/) package
-* Data over the year of 2017
 
 
 ```
-#&gt; # A tibble: 455,520 x 6
-#&gt;   Sensor Date_Time           Date        Time Count Holiday
-#&gt;   &lt;chr&gt;  &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt; &lt;lgl&gt;  
-#&gt; 1 Alfre… 2017-01-01 00:00:00 2017-01-01     0   222 FALSE  
-#&gt; 2 Austr… 2017-01-01 00:00:00 2017-01-01     0  1358 FALSE  
-#&gt; 3 Birra… 2017-01-01 00:00:00 2017-01-01     0  1099 FALSE  
-#&gt; 4 Bourk… 2017-01-01 00:00:00 2017-01-01     0  1916 FALSE  
-#&gt; 5 Bourk… 2017-01-01 00:00:00 2017-01-01     0   855 FALSE  
-#&gt; 6 Bourk… 2017-01-01 00:00:00 2017-01-01     0   855 FALSE  
-#&gt; # ... with 4.555e+05 more rows
+#&gt; # A tibble: 334,257 x 5
+#&gt;    Sensor        Date_Time           Date        Time Count
+#&gt;    &lt;chr&gt;         &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt;  1 Bourke St-Ru… 2017-01-01 00:00:00 2017-01-01     0  1916
+#&gt;  2 Waterfront C… 2017-01-01 00:00:00 2017-01-01     0  2277
+#&gt;  3 Tin Alley-Sw… 2017-01-01 00:00:00 2017-01-01     0    17
+#&gt;  4 Victoria Poi… 2017-01-01 00:00:00 2017-01-01     0  1243
+#&gt;  5 Flinders Str… 2017-01-01 00:00:00 2017-01-01     0  3741
+#&gt;  6 Southbank     2017-01-01 00:00:00 2017-01-01     0  6661
+#&gt;  7 Bourke Stree… 2017-01-01 00:00:00 2017-01-01     0   855
+#&gt;  8 Southern Cro… 2017-01-01 00:00:00 2017-01-01     0  1335
+#&gt;  9 Birrarung Ma… 2017-01-01 00:00:00 2017-01-01     0  1099
+#&gt; 10 City Square   2017-01-01 00:00:00 2017-01-01     0  5120
+#&gt; # ... with 3.342e+05 more rows
 ```
 
+
+Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.gov.au), and accessed through the [rwalkr](http://pkg.earo.me/rwalkr/) package
 ]
 
 ---
 
 .left-column[
-## Take a glimpse
+## Glimpse
 ### - selected sensors
 ]
 .right-column[
@@ -92,7 +106,7 @@ background-size: 100%
 ---
 
 .left-column[
-## Take a glimpse
+## Glimpse
 ### - selected sensors
 ### - time series plot
 ]
@@ -102,36 +116,236 @@ background-size: 100%
 
 ---
 
-
-
----
-
-
-```
-#&gt; # A tsibble: 26,280 x 5 [1HOUR]
-#&gt; # Keys:      Sensor [3]
-#&gt;   Sensor         Date_Time           Date        Time Count
-#&gt;   &lt;chr&gt;          &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
-#&gt; 1 Flinders St-E… 2017-01-01 00:00:00 2017-01-01     0    NA
-#&gt; 2 Flinders St-E… 2017-01-01 01:00:00 2017-01-01     1    NA
-#&gt; 3 Flinders St-E… 2017-01-01 02:00:00 2017-01-01     2    NA
-#&gt; 4 Flinders St-E… 2017-01-01 03:00:00 2017-01-01     3    NA
-#&gt; 5 Flinders St-E… 2017-01-01 04:00:00 2017-01-01     4    NA
-#&gt; 6 Flinders St-E… 2017-01-01 05:00:00 2017-01-01     5    NA
-#&gt; # ... with 2.627e+04 more rows
-```
+.left-column[
+## Glimpse
+### - selected sensors
+### - time series plot
+### - characteristics
+]
+.right-column[
+* heterogenous data types
+* multiple units (sensors)
+* implicit missing values
+&lt;img src="figure/ts-plot-na-1.svg" style="display: block; margin: auto;" /&gt;
+]
 
 ---
 
+class:: middle
 
+## However ...
+
+.pull-left[
+### we have
+.checked[
+* heterogeneity
+* explicitly declared time index
+* implicit missing values
+]
+]
+.pull-right[
+### conventional time series structure
+.x[
+* homogeneity
+* implicitly inferred time index
+* explicit missing values
+]
+]
+
+---
+
+class: inverse middle center
+
+.scale-up[&lt;img src="img/tsibble.svg" height=200px size=50%&gt;]
+## The future of time series in R
 
 ---
 
 .left-column[
-## Take a glimpse
-### - selected sensors
-### - time series plot
-### - faceted display
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+]
+.right-column[
+* **index**: an explicitly declared variable containing time indices.
+* **key**: uniquely identifies each unit that measurements take place on over time.
+* **interval**: a common time interval if data with regular time interval.
+
+
+```r
+subdat_tsbl &lt;- subdat %&gt;% 
+  as_tsibble(key = id(Sensor), index = Date_Time)
+subdat_tsbl
+```
+```
+*#&gt; # A tsibble: 20,278 x 5 [1HOUR]
+*#&gt; # Keys:      Sensor [3]
+#&gt;    Sensor        Date_Time           Date        Time Count
+#&gt;    &lt;chr&gt;         &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt;  1 Flinders St-… 2017-04-04 00:00:00 2017-04-04     0   170
+#&gt;  2 Flinders St-… 2017-04-04 01:00:00 2017-04-04     1    70
+#&gt;  3 Flinders St-… 2017-04-04 02:00:00 2017-04-04     2    63
+#&gt;  4 Flinders St-… 2017-04-04 03:00:00 2017-04-04     3    61
+#&gt;  5 Flinders St-… 2017-04-04 04:00:00 2017-04-04     4    89
+#&gt;  6 Flinders St-… 2017-04-04 05:00:00 2017-04-04     5   239
+#&gt;  7 Flinders St-… 2017-04-04 06:00:00 2017-04-04     6   630
+#&gt;  8 Flinders St-… 2017-04-04 07:00:00 2017-04-04     7  1563
+#&gt;  9 Flinders St-… 2017-04-04 08:00:00 2017-04-04     8  2834
+#&gt; 10 Flinders St-… 2017-04-04 09:00:00 2017-04-04     9  1829
+#&gt; # ... with 2.027e+04 more rows
+```
+
+
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+]
+.right-column[
+
+```r
+subdat_full &lt;- subdat_tsbl %&gt;% 
+  fill_na(
+    Date = as_date(Date_Time),
+    Time = hour(Date_Time)
+  )
+subdat_full
+```
+
+```
+#&gt; # A tsibble: 26,280 x 5 [1HOUR]
+#&gt; # Keys:      Sensor [3]
+#&gt;    Sensor        Date_Time           Date        Time Count
+#&gt;    &lt;chr&gt;         &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt;  1 Flinders St-… 2017-01-01 00:00:00 2017-01-01     0    NA
+#&gt;  2 Flinders St-… 2017-01-01 01:00:00 2017-01-01     1    NA
+#&gt;  3 Flinders St-… 2017-01-01 02:00:00 2017-01-01     2    NA
+#&gt;  4 Flinders St-… 2017-01-01 03:00:00 2017-01-01     3    NA
+#&gt;  5 Flinders St-… 2017-01-01 04:00:00 2017-01-01     4    NA
+#&gt;  6 Flinders St-… 2017-01-01 05:00:00 2017-01-01     5    NA
+#&gt;  7 Flinders St-… 2017-01-01 06:00:00 2017-01-01     6    NA
+#&gt;  8 Flinders St-… 2017-01-01 07:00:00 2017-01-01     7    NA
+#&gt;  9 Flinders St-… 2017-01-01 08:00:00 2017-01-01     8    NA
+#&gt; 10 Flinders St-… 2017-01-01 09:00:00 2017-01-01     9    NA
+#&gt; # ... with 2.627e+04 more rows
+```
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+]
+.right-column[
+&lt;img src="figure/ts-plot-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+### - aggregate over time
+]
+.right-column[
+
+```r
+subdat_daily &lt;- subdat_full %&gt;% 
+  group_by(Sensor) %&gt;% 
+  tsummarise(
+    Date = as_date(Date_Time),
+    DailyCount = sum(Count, na.rm = TRUE)
+  )
+subdat_daily
+```
+
+```
+#&gt; # A tsibble: 1,095 x 3 [1DAY]
+#&gt; # Keys:      Sensor [3]
+#&gt;    Sensor                          Date       DailyCount
+#&gt;    &lt;chr&gt;                           &lt;date&gt;          &lt;int&gt;
+#&gt;  1 Flinders St-Elizabeth St (East) 2017-01-01          0
+#&gt;  2 Flinders St-Elizabeth St (East) 2017-01-02          0
+#&gt;  3 Flinders St-Elizabeth St (East) 2017-01-03          0
+#&gt;  4 Flinders St-Elizabeth St (East) 2017-01-04          0
+#&gt;  5 Flinders St-Elizabeth St (East) 2017-01-05          0
+#&gt;  6 Flinders St-Elizabeth St (East) 2017-01-06          0
+#&gt;  7 Flinders St-Elizabeth St (East) 2017-01-07          0
+#&gt;  8 Flinders St-Elizabeth St (East) 2017-01-08          0
+#&gt;  9 Flinders St-Elizabeth St (East) 2017-01-09          0
+#&gt; 10 Flinders St-Elizabeth St (East) 2017-01-10          0
+#&gt; # ... with 1,085 more rows
+```
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+### - aggregate over time
+]
+.right-column[
+&lt;img src="figure/daily-sensor-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+### - aggregate over time
+### - dplyr verbs
+]
+.right-column[
+
+```r
+subdat_full &lt;- subdat_full %&gt;% 
+  mutate(
+    Holiday = if_else(
+      Date %in% c(au_holiday(2017)$date, as_date("2017-09-29")), 
+      TRUE, FALSE),
+    Day = wday(Date_Time, label = TRUE, week_start = 1)
+  )
+subdat_full
+```
+
+```
+#&gt; # A tsibble: 26,280 x 7 [1HOUR]
+#&gt; # Keys:      Sensor [3]
+#&gt;    Sensor        Date_Time           Date        Time Count
+#&gt;    &lt;chr&gt;         &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt;  1 Flinders St-… 2017-01-01 00:00:00 2017-01-01     0    NA
+#&gt;  2 Flinders St-… 2017-01-01 01:00:00 2017-01-01     1    NA
+#&gt;  3 Flinders St-… 2017-01-01 02:00:00 2017-01-01     2    NA
+#&gt;  4 Flinders St-… 2017-01-01 03:00:00 2017-01-01     3    NA
+#&gt;  5 Flinders St-… 2017-01-01 04:00:00 2017-01-01     4    NA
+#&gt;  6 Flinders St-… 2017-01-01 05:00:00 2017-01-01     5    NA
+#&gt;  7 Flinders St-… 2017-01-01 06:00:00 2017-01-01     6    NA
+#&gt;  8 Flinders St-… 2017-01-01 07:00:00 2017-01-01     7    NA
+#&gt;  9 Flinders St-… 2017-01-01 08:00:00 2017-01-01     8    NA
+#&gt; 10 Flinders St-… 2017-01-01 09:00:00 2017-01-01     9    NA
+#&gt; # ... with 2.627e+04 more rows, and 2 more variables:
+#&gt; #   Holiday &lt;lgl&gt;, Day &lt;ord&gt;
+```
+]
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+### - aggregate over time
+### - dplyr verbs
 ]
 .right-column[
 &lt;img src="figure/facet-time-1.svg" style="display: block; margin: auto;" /&gt;
@@ -157,64 +371,14 @@ class: inverse middle center
 
 ---
 
-.left-column[
-## Calendar-based vis
-### - construction
+## Calendar-based visualisation
+
+.block[
+.flowchart[
+* `frame_calendar()` &lt;br&gt; re-structure into a calendar layout
 ]
-.right-column[
-&lt;center&gt;
-  &lt;img src="img/month.png" width = 500&gt;
-&lt;/center&gt;
-
-The grid position for any day in the month is given by
-
-`$$\begin{align}
-i &amp;= \lceil (g \mod 35) / 7\rceil \\ j &amp;= g \mod 7.
-\end{align}$$`
-
-Let `\(h\)` and `\(c\)` be the scaled hour and count, respectively, then the final
-coordinates are given by:
-
-`$$\begin{align}
-x &amp;= j + h \\ y &amp;= i - c.
-\end{align}$$`
 ]
 
----
-
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-]
-.right-column[
-### The `frame_calendar()` function
-
-```r
-frame_calendar(
-  data, x, y, date, calendar = "monthly", dir = "h",
-  sunday = FALSE, nrow = NULL, ncol = NULL, polar = FALSE,
-  scale = "fixed", width = 0.95, height = 0.95
-)
-```
-* `x`, `y`: a unquoted (or bare) variable mapping to x and y axis.
-* `date`: a Date variable mapping to dates in the calendar.
-* `calendar`: type of calendar. "monthly", "weekly", "daily".
-* `sunday`: `FALSE` indicating to starting with Monday in a week, or `TRUE` for Sunday.
-* `nrow`, `ncol`: number of rows and columns defined for "monthly" calendar layout.
-* `scale`: "fixed", "free", "free_wday", and "free_mday".
-]
-
----
-
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
-]
-.right-column[
-## Rearrange the data
 ```r
 sx_cal &lt;- pedestrian %&gt;% 
   filter(Sensor == "Southern Cross Station") %&gt;% 
@@ -223,112 +387,77 @@ sx_cal &lt;- pedestrian %&gt;%
 
 
 ```
-#&gt; # A tibble: 8,760 x 5
-#&gt;    Time Count Date       .Time .Count
-#&gt; * &lt;int&gt; &lt;int&gt; &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-#&gt; 1     0  1335 2017-01-01 0.258  0.986
-#&gt; 2     1   463 2017-01-01 0.260  0.972
-#&gt; 3     2   219 2017-01-01 0.261  0.968
-#&gt; 4     3   122 2017-01-01 0.263  0.967
-#&gt; 5     4    21 2017-01-01 0.264  0.965
-#&gt; 6     5    28 2017-01-01 0.266  0.965
-#&gt; # ... with 8,754 more rows
+#&gt; # A tsibble: 8,760 x 6 [1HOUR]
+#&gt;    Date_Time            Time Count Date       .Time .Count
+#&gt;    &lt;dttm&gt;              &lt;int&gt; &lt;int&gt; &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1 2017-01-01 00:00:00     0  1335 2017-01-01 0.258  0.986
+#&gt;  2 2017-01-01 01:00:00     1   463 2017-01-01 0.260  0.972
+#&gt;  3 2017-01-01 02:00:00     2   219 2017-01-01 0.261  0.968
+#&gt;  4 2017-01-01 03:00:00     3   122 2017-01-01 0.263  0.967
+#&gt;  5 2017-01-01 04:00:00     4    21 2017-01-01 0.264  0.965
+#&gt;  6 2017-01-01 05:00:00     5    28 2017-01-01 0.266  0.965
+#&gt;  7 2017-01-01 06:00:00     6    26 2017-01-01 0.268  0.965
+#&gt;  8 2017-01-01 07:00:00     7    35 2017-01-01 0.269  0.965
+#&gt;  9 2017-01-01 08:00:00     8    55 2017-01-01 0.271  0.966
+#&gt; 10 2017-01-01 09:00:00     9    82 2017-01-01 0.272  0.966
+#&gt; # ... with 8,750 more rows
 ```
-]
 
 ---
 
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
+## Calendar-based visualisation
+
+.block[
+.flowchart[
+* `frame_calendar()` &lt;br&gt; re-structure into a calendar layout
+* `ggplot()` &lt;br&gt; synchronize with grammar of graphics
 ]
-.right-column[
-## Initialise the plot with `ggplot2`
+]
+
 ```r
-p1_sx &lt;- sx_cal %&gt;% 
-  ggplot(aes(x = .Time, y = .Count, group = Date)) +
-  geom_line()
+sx_cal &lt;- pedestrian %&gt;% 
+  filter(Sensor == "Southern Cross Station") %&gt;% 
+  frame_calendar(x = Time, y = Count, date = Date)
+p_sx &lt;- sx_cal %&gt;% 
+* ggplot(aes(x = .Time, y = .Count, colour = Holiday, group = Date)) +
+* geom_line()
 ```
+
+---
+
+class: middle
+
 &lt;img src="figure/sx-plot-1.svg" style="display: block; margin: auto;" /&gt;
-]
 
 ---
 
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
-]
-.right-column[
-## Add reference lines and labels
-```r
-prettify(p1_sx)
-```
-&lt;img src="figure/sx-prettify-1.svg" style="display: block; margin: auto;" /&gt;
-]
+## Calendar-based visualisation
 
----
-
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
+.block[
+.flowchart[
+* `frame_calendar()` &lt;br&gt; re-structure into a calendar layout
+* `ggplot()` &lt;br&gt; synchronize with grammar of graphics
+* `prettify()` &lt;br&gt; add reference lines and labels
 ]
-.right-column[
-## Colour mapping as usual 
+]
 ```r
-p2_sx &lt;- sx_cal %&gt;%
+sx_cal &lt;- pedestrian %&gt;% 
+  filter(Sensor == "Southern Cross Station") %&gt;% 
+  frame_calendar(x = Time, y = Count, date = Date)
+p_sx &lt;- sx_cal %&gt;% 
   ggplot(aes(x = .Time, y = .Count, colour = Holiday, group = Date)) +
   geom_line()
-prettify(p2_sx)
+*prettify(p_sx)
 ```
-&lt;img src="figure/sx-hol-1.svg" style="display: block; margin: auto;" /&gt;
-]
 
 ---
 
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
-]
-.right-column[
-## Naturally work with the `group_by()`
-```r
-facet_cal &lt;- subdat %&gt;% 
-  group_by(Sensor) %&gt;% 
-* frame_calendar(
-*   x = Time, y = Count, date = Date, nrow = 2
-* )
+class: middle
 
-p_facet &lt;- facet_cal %&gt;% 
-  ggplot(aes(x = .Time, y = .Count, group = Date)) +
-  geom_line(aes(colour = Sensor)) +
-  facet_grid(Sensor ~ .) +
-  scale_colour_brewer(palette = "Dark2")
-prettify(p_facet, label = NULL)
-```
-]
+&lt;img src="figure/sx-prettify-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
-.left-column[
-## Calendar-based vis
-### - construction
-### - the args
-### - usage
-]
-.right-column[
-## Faceted calendar plots
-&lt;img src="figure/facet-1.svg" style="display: block; margin: auto;" /&gt;
-]
-
----
 .left-column[
 ## Special events
 ### - adele's concert
@@ -401,41 +530,14 @@ prettify(p_facet, label = NULL)
 
 ---
 
-.left-column[
-## Showcases
-### - electricity consumption
-### - bus delays
-### - web traffic
-]
-.right-column[
-&lt;br&gt;
-&lt;br&gt;
-![bus](img/web.png)
-.red[.footnote[Reference: [Rで解析：時系列データをカレンダー形式にプロット「sugrrants」パッケージ](https://www.karada-good.net/analyticsr/r-620)]]
-]
-
----
-
-## <i class="fa  fa-list "></i> Summary
-
-
-* The full range of plotting capabilities in *ggplot2* is essentially available, from `geom_point()` to `geom_boxplot()`.
-* Other language supports are made for month and weekday labels, like CJK.
-* Patterns on special events for the region, like Anzac Day in Australia, or Thanksgiving Day in the USA, more easily pop out to the viewer as public holidays.
-* This sort of layout will be useful for studying consumer trends, or human behavior, such as pedestrian patterns or residential electricity demand.
-
----
-
 class: inverse middle center
 
 # Wrap-up
 
 ---
 
-## Data science pipeline
+class: middle
 
-&lt;br&gt;
-&lt;br&gt;
 &lt;img src="img/data-science.png"&gt;
 
 .footnote[adapted from [r4ds](http://r4ds.had.co.nz/explore-intro.html)]
@@ -470,7 +572,7 @@ class: inverse middle center
 
 --
 
-### THE END
+### FIN
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

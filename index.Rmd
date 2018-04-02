@@ -35,13 +35,13 @@ class: middle
 
 ## What is temporal-context data?
 
-**Data measured or collected at different time points**
+Data measured or collected at different time points
 
 --
 
 ## What to do with it?
 
-* (1) trend, (2) seasonal variations, (3) outliers
+* trend, seasonal variations, or outliers
 * time dependencies within or cross series
 * modeling and forecasting
 
@@ -52,7 +52,6 @@ class: bottom center
 background-image: url(img/sensor.png)
 background-size: 50%
 
-<img src="img/actual.jpg" height=400px>
 # .blue[Melbourne pedestrian activity]
 
 ---
@@ -62,8 +61,6 @@ background-size: 50%
 ### - sensors
 ]
 .right-column[
-## The city of Melbourne
-
 ```{r map, fig.height = 9}
 ```
 ```{r selected-sensor, fig.show = "hide"}
@@ -86,8 +83,7 @@ pedestrian
 ```{r ped-sub}
 ```
 
-Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.gov.au) <br>
-Accessed through the [rwalkr](http://pkg.earo.me/rwalkr/) package
+Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.gov.au), and accessed through the [rwalkr](http://pkg.earo.me/rwalkr/) package
 ]
 
 ---
@@ -134,6 +130,8 @@ Accessed through the [rwalkr](http://pkg.earo.me/rwalkr/) package
 
 ---
 
+class:: middle
+
 ## However ...
 
 .pull-left[
@@ -145,7 +143,7 @@ Accessed through the [rwalkr](http://pkg.earo.me/rwalkr/) package
 ]
 ]
 .pull-right[
-### `ts`/`xts`/`zoo`
+### conventional time series structure
 .x[
 * homogeneity
 * implicitly inferred time index
@@ -170,9 +168,29 @@ class: inverse middle center
 * **index**: an explicitly declared variable containing time indices.
 * **key**: uniquely identifies each unit that measurements take place on over time.
 * **interval**: a common time interval if data with regular time interval.
-* arranged by key and index in ascending time order.
-```{r tsibble, echo = TRUE}
+```{r tsibble, include = FALSE}
 ```
+```{r tsibble, echo = TRUE, eval = FALSE}
+```
+```
+*#> # A tsibble: 20,278 x 5 [1HOUR]
+*#> # Keys:      Sensor [3]
+#>    Sensor        Date_Time           Date        Time Count
+#>    <chr>         <dttm>              <date>     <int> <int>
+#>  1 Flinders St-… 2017-04-04 00:00:00 2017-04-04     0   170
+#>  2 Flinders St-… 2017-04-04 01:00:00 2017-04-04     1    70
+#>  3 Flinders St-… 2017-04-04 02:00:00 2017-04-04     2    63
+#>  4 Flinders St-… 2017-04-04 03:00:00 2017-04-04     3    61
+#>  5 Flinders St-… 2017-04-04 04:00:00 2017-04-04     4    89
+#>  6 Flinders St-… 2017-04-04 05:00:00 2017-04-04     5   239
+#>  7 Flinders St-… 2017-04-04 06:00:00 2017-04-04     6   630
+#>  8 Flinders St-… 2017-04-04 07:00:00 2017-04-04     7  1563
+#>  9 Flinders St-… 2017-04-04 08:00:00 2017-04-04     8  2834
+#> 10 Flinders St-… 2017-04-04 09:00:00 2017-04-04     9  1829
+#> # ... with 2.027e+04 more rows
+```
+
+
 ]
 
 ---
@@ -302,11 +320,19 @@ sx_cal <- pedestrian %>%
 ]
 
 ```r
+sx_cal <- pedestrian %>% 
+  filter(Sensor == "Southern Cross Station") %>% 
+  frame_calendar(x = Time, y = Count, date = Date)
 p_sx <- sx_cal %>% 
 * ggplot(aes(x = .Time, y = .Count, colour = Holiday, group = Date)) +
 * geom_line()
 ```
-```{r sx-plot, fig.height = 9}
+
+---
+
+class: middle
+
+```{r sx-plot, fig.height = 9.5}
 ```
 
 ---
@@ -321,8 +347,19 @@ p_sx <- sx_cal %>%
 ]
 ]
 ```r
-* prettify(p_sx)
+sx_cal <- pedestrian %>% 
+  filter(Sensor == "Southern Cross Station") %>% 
+  frame_calendar(x = Time, y = Count, date = Date)
+p_sx <- sx_cal %>% 
+  ggplot(aes(x = .Time, y = .Count, colour = Holiday, group = Date)) +
+  geom_line()
+*prettify(p_sx)
 ```
+
+---
+
+class: middle
+
 ```{r sx-prettify, fig.height = 9.5}
 ```
 
@@ -408,10 +445,8 @@ class: inverse middle center
 
 ---
 
-## Data science pipeline
+class: middle
 
-<br>
-<br>
 <img src="img/data-science.png">
 
 .footnote[adapted from [r4ds](http://r4ds.had.co.nz/explore-intro.html)]

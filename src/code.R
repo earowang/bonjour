@@ -42,7 +42,8 @@ qmplot(
 ) +
 geom_point(aes(x = Longitude, y = Latitude), data = sensor_sel, size = I(12)) +
 scale_colour_brewer(palette = "Dark2") +
-theme_remark()
+theme_remark() +
+theme(legend.position = "none")
 
 ## ---- ped-data
 ped_run <- rwalkr::run_melb(year = 2017, na.rm = TRUE)
@@ -161,11 +162,11 @@ subdat_full %>%
   ylab("Hourly Counts")
 
 ## ---- sx
-sx_cal <- pedestrian %>% 
+sx_cal <- subdat_full %>% 
   filter(Sensor == "Southern Cross Station") %>% 
   frame_calendar(x = Time, y = Count, date = Date)
 sx_cal %>% 
-  select(Time, Count, Date, .Time, .Count)
+  select(Date_Time, Time, Count, Date, .Time, .Count)
 
 ## ---- sx-plot
 p_sx <- sx_cal %>% 
