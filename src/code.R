@@ -79,6 +79,9 @@ subdat_tsbl <- subdat %>%
   as_tsibble(key = id(Sensor), index = Date_Time)
 subdat_tsbl
 
+## ---- fill-na0
+subdat_tsbl %>% fill_na()
+
 ## ---- fill-na
 subdat_full <- subdat_tsbl %>% 
   fill_na(
@@ -117,7 +120,7 @@ subdat_daily
 subdat_daily %>% 
   ggplot(aes(x = Date, y = DailyCount, colour = Sensor)) +
   geom_line() +
-  geom_point() +
+  # geom_point() +
   facet_grid(
     Sensor ~ ., 
     labeller = labeller(Sensor = label_wrap_gen(20)),

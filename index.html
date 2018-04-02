@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Tidy data structure and calendar-based visualisation   to support exploration of temporal-context data</title>
+    <title>Tidy data structure and   calendar-based visualisation   to support exploration of temporal-context data</title>
     <meta charset="utf-8">
-    <meta name="author" content="Earo Wang" />
+    <meta name="author" content="Earo Wang   Monash University" />
     <link href="index_files/remark-css/default.css" rel="stylesheet" />
     <link href="index_files/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="myremark.css" type="text/css" />
@@ -12,8 +12,8 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Tidy data structure and calendar-based visualisation <br> to support exploration of temporal-context data
-### Earo Wang
+# Tidy data structure and <br> calendar-based visualisation <br> to support exploration of temporal-context data
+### Earo Wang <br> Monash University
 ### Apr 03, 2018 <br> slides at <a href="http://slides.earo.me/bonjour" class="uri">http://slides.earo.me/bonjour</a>
 
 ---
@@ -35,8 +35,8 @@ Data measured or collected at different time points
 
 ## What to do with it?
 
-* trend, seasonal variations, or outliers
-* time dependencies within or cross series
+* trend, seasonal variations, or unexpected behaviours
+* autocorrelation or cross-correlation of multiple series
 * modeling and forecasting
 
 ---
@@ -131,26 +131,44 @@ Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.go
 
 ---
 
-class:: middle
-
 ## However ...
 
+The current structure that underlies time series objects (e.g. `ts`, `xts`, `zoo`):
+
+`\begin{equation}
+  \begin{bmatrix}
+  X_{11} &amp; X_{21} &amp; \cdots &amp; X_{p1} \\
+  X_{12} &amp; X_{22} &amp; \cdots &amp; X_{p2} \\
+  \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+  X_{1T} &amp; X_{2T} &amp; \cdots &amp; X_{pT}
+  \end{bmatrix}
+\end{equation}`
+
+where `\(X_{jt}\)` represents series `\(j\)`, for `\(j = 1, \dots, p\)` and `\(1 \leq t \leq T\)`, in the form of a `\(T \times p\)` matrix.
+
+--
+
 .pull-left[
-### we have
-.checked[
-* heterogeneity
-* explicitly declared time index
-* implicit missing values
-]
-]
-.pull-right[
-### conventional time series structure
+### conventional structure
 .x[
 * homogeneity
 * implicitly inferred time index
 * explicit missing values
 ]
 ]
+.pull-right[
+### we'd like
+.checked[
+* heterogeneity
+* explicitly declared time index
+* implicit missing values
+]
+]
+
+???
+
+1. each column is a time series
+2. each row is a time point
 
 ---
 
@@ -158,6 +176,25 @@ class: inverse middle center
 
 .scale-up[&lt;img src="img/tsibble.svg" height=200px size=50%&gt;]
 ## The future of time series in R
+
+---
+
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+]
+.right-column[
+## Tidy data principles.red[&lt;sup&gt;1&lt;/sup&gt;]:
+* Each variable forms a column.
+* Each observation forms a row.
+* Each type of observational unit forms a table.
+![](img/tidy.png)
+
+.footnote[
+.red[1.] Wickham, H (2014). Tidy data. *Journal of Statistical Software* **59**(10), 1–23.
+]
+]
+
 
 ---
 
@@ -193,8 +230,38 @@ subdat_tsbl
 #&gt; 10 Flinders St-… 2017-04-04 09:00:00 2017-04-04     9  1829
 #&gt; # ... with 2.027e+04 more rows
 ```
+]
 
+---
 
+.left-column[
+&lt;img src="img/tsibble.svg" height=120px&gt;
+### - semantics
+### - turn implicit missingness to explicit
+]
+.right-column[
+
+```r
+subdat_tsbl %&gt;% fill_na()
+```
+
+```
+#&gt; # A tsibble: 26,280 x 5 [1HOUR]
+#&gt; # Keys:      Sensor [3]
+#&gt;    Sensor        Date_Time           Date        Time Count
+#&gt;    &lt;chr&gt;         &lt;dttm&gt;              &lt;date&gt;     &lt;int&gt; &lt;int&gt;
+#&gt;  1 Flinders St-… 2017-01-01 00:00:00 NA            NA    NA
+#&gt;  2 Flinders St-… 2017-01-01 01:00:00 NA            NA    NA
+#&gt;  3 Flinders St-… 2017-01-01 02:00:00 NA            NA    NA
+#&gt;  4 Flinders St-… 2017-01-01 03:00:00 NA            NA    NA
+#&gt;  5 Flinders St-… 2017-01-01 04:00:00 NA            NA    NA
+#&gt;  6 Flinders St-… 2017-01-01 05:00:00 NA            NA    NA
+#&gt;  7 Flinders St-… 2017-01-01 06:00:00 NA            NA    NA
+#&gt;  8 Flinders St-… 2017-01-01 07:00:00 NA            NA    NA
+#&gt;  9 Flinders St-… 2017-01-01 08:00:00 NA            NA    NA
+#&gt; 10 Flinders St-… 2017-01-01 09:00:00 NA            NA    NA
+#&gt; # ... with 2.627e+04 more rows
+```
 ]
 
 ---
@@ -546,6 +613,10 @@ class: middle
 
 class: inverse middle center
 
+### Joint works with [Di Cook](http://dicook.org) and [Rob J Hyndman](http://robjhyndman.com)
+
+--
+
 ### Slides created via xaringan ⚔️ &lt;http://slides.earo.me/bonjour&gt;
 
 --
@@ -556,7 +627,7 @@ class: inverse middle center
 
 --
 
-### Thank you!
+### Merci!
 
 --
 
