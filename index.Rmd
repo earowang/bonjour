@@ -132,7 +132,7 @@ Sourced from [Melbourne open data portal](http://www.pedestrian.melbourne.vic.go
 
 ## However ...
 
-The current structure that underlies time series objects (e.g. `ts`, `xts`, `zoo`):
+The current structure that underlies time series objects:
 
 \begin{equation}
   \begin{bmatrix}
